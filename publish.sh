@@ -1,6 +1,6 @@
 set -e
 
-npm install
+yarn install
 npm run build
 cd dist
 git config --global user.name 'hal-wang' 
