@@ -1,55 +1,63 @@
 <template>
-  <div>
-    <a-form :model="formData" :label-col="{ style: { width: '80px' } }">
-      <a-form-item label="项目名称" value="value">
-        <a-input v-model:value="formData.name" placeholder="halsp-project" />
-      </a-form-item>
-      <a-form-item label="运行环境" value="env">
-        <a-cascader
-          v-model:value="formData.env"
-          :options="envOptions"
-          expand-trigger="hover"
-          placeholder="请选择运行环境"
-        />
-      </a-form-item>
-      <a-form-item label="运行环境" value="plugins">
-        <a-select
-          v-model:value="formData.plugins"
-          mode="multiple"
-          placeholder="请选择运行环境"
-          :options="pluginOptions"
-        />
-      </a-form-item>
-      <a-form-item label="Registry" value="registry">
-        <a-select v-model:value="formData.registry">
-          <a-select-option value="https://registry.npmjs.org">
-            https://registry.npmjs.org
-          </a-select-option>
-          <a-select-option value="https://registry.npmmirror.com">
-            https://registry.npmmirror.com
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label=" ">
-        <a-button type="primary" @click="handleCreate">立即创建</a-button>
-      </a-form-item>
-    </a-form>
-  </div>
+  <a-form :model="formData" :label-col="{ style: { width: '80px' } }">
+    <a-form-item label="项目名称" value="value">
+      <a-input v-model:value="formData.name" placeholder="halsp-project" />
+    </a-form-item>
+    <a-form-item label="运行环境" value="env">
+      <a-cascader
+        v-model:value="formData.env"
+        :options="envOptions"
+        expand-trigger="hover"
+        placeholder="请选择运行环境"
+      />
+    </a-form-item>
+    <a-form-item label="运行环境" value="plugins">
+      <a-select
+        v-model:value="formData.plugins"
+        mode="multiple"
+        placeholder="请选择运行环境"
+        :options="pluginOptions"
+      />
+    </a-form-item>
+    <a-form-item label="Registry" value="registry">
+      <a-select v-model:value="formData.registry">
+        <a-select-option value="https://registry.npmjs.org">
+          https://registry.npmjs.org
+        </a-select-option>
+        <a-select-option value="https://registry.npmmirror.com">
+          https://registry.npmmirror.com
+        </a-select-option>
+      </a-select>
+    </a-form-item>
+    <a-form-item>
+      <a-button type="primary" class="ml-20" @click="handleCreate">立即创建</a-button>
+    </a-form-item>
+  </a-form>
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive } from 'vue';
+  import { computed, reactive, ref, watch } from 'vue';
   import type { CascaderProps, SelectProps } from 'ant-design-vue';
   import sdk from '@stackblitz/sdk';
 
   const formData = reactive({
     name: 'halsp-project',
-    env: '1',
+    env: ['1'],
     plugins: ['inject', 'router', 'pipe'] as string[],
     registry: 'https://registry.npmmirror.com',
   });
 
-  const isMicro = computed(() => formData.env.startsWith('micro-'));
+  const isMicro = ref(false);
+
+  watch(
+    () => formData.env,
+    () => {
+      isMicro.value = !!getEnv(envOptions.value)?.startsWith('micro-');
+      formData.plugins = formData.plugins.filter(
+        (plugin) => pluginOptions.value!.filter((p) => p.value == plugin).length > 0,
+      );
+    },
+  );
 
   const envOptions = computed<CascaderProps['options']>(() => [
     {
@@ -190,12 +198,12 @@
       {
         value: 'static',
         label: '静态资源 (@halsp/static)',
-        when: () => !isMicro.value,
+        when: !isMicro.value,
       },
       {
         value: 'swagger',
         label: 'Swagger 文档 (@halsp/swagger)',
-        when: () => !isMicro.value,
+        when: !isMicro.value,
       },
       {
         value: 'jwt',
@@ -209,7 +217,7 @@
         value: 'logger',
         label: '日志插件 (@halsp/logger)',
       },
-    ].filter((item) => !item.when || !!item.when()),
+    ].filter((item) => typeof item.when == 'undefined' || !!item.when),
   );
 
   function handleCreate() {
@@ -218,7 +226,7 @@
     const env = getEnv(envOptions.value) || 'native';
     const plugins = formData.plugins.join(',');
 
-    const command = `halsp create ${name} -e ${env} --plugins ${plugins} -pm yarn --skipInstall --skipRun${mirrorArg}`;
+    const command = `halsp create ${name} -e ${env} --plugins ${plugins} -pm yarn --skipInstall --skipGit --skipRun${mirrorArg}`;
 
     sdk.openProject(
       {
@@ -227,16 +235,17 @@
         template: 'node',
         files: {
           'init.sh': `
-yarn install${mirrorArg}
+yarn add @halsp/cli${mirrorArg}
 mkdir .temp
 cd .temp
 ${command}
 cd ..
+rm -rf .stackblitzrc
 rm -rf yarn.lock
 rm -rf node_modules
 rm -rf init.sh
-rm -rf .stackblitzrc
 cp -r ./.temp/${name}/* ./
+cp -r ./.temp/${name}/.stackblitzrc ./
 rm -rf ./temp
 code ./README.md
 yarn install${mirrorArg}
@@ -245,10 +254,7 @@ yarn start
           'package.json': `
 {
   "name": "${name}",
-  "version": "0.0.0",
-  "dependencies": {
-    "@halsp/cli": "*"
-  }
+  "version": "0.0.0"
 }`,
           '.stackblitzrc': `
 {
@@ -264,8 +270,10 @@ yarn start
   }
 
   function getEnv(options: CascaderProps['options']): string | undefined {
+    if (!formData.env?.length) return undefined;
+
     for (const opt of options!) {
-      if (opt.value == formData.env) {
+      if (opt.value == formData.env.at(formData.env.length - 1)) {
         return opt.flag;
       }
 

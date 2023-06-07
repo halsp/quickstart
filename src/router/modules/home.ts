@@ -1,14 +1,11 @@
 import { RouteRecordRaw } from 'vue-router';
 
-const home: RouteRecordRaw[] = [
+export default [
   {
     path: '/',
-    name: 'Home',
     component: () => import('/@/views/home/index.vue'),
     meta: {
       title: '主页',
     },
   },
-];
-
-export default home;
+] as RouteRecordRaw[];

@@ -27,3 +27,5 @@ pnpm-debug.log*
 
 
 *-error.log
+
+components.d.ts

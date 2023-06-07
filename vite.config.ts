@@ -28,7 +28,11 @@ export default (): UserConfig => {
         svgoOptions: true,
       }),
       Components({
-        resolvers: [AntDesignVueResolver()],
+        resolvers: [
+          AntDesignVueResolver({
+            importStyle: 'less',
+          }),
+        ],
       }),
     ],
     resolve: {
@@ -46,14 +50,16 @@ export default (): UserConfig => {
     css: {
       preprocessorOptions: {
         less: {
-          modifyVars: {
-            'primary-color': '#1e80ff', //  Primary color
-            'success-color': '#55D187', //  Success color
-            'error-color': '#ED6F6F', //  False color
-            'warning-color': '#EFBD47', //   Warning color
-            'font-size-base': '14px', //  Main font size
-            'border-radius-base': '2px', //  Component/float fillet
-            'app-content-background': '#fafafa', //   Link color
+          lessOptions: {
+            modifyVars: {
+              'primary-color': '#1e80ff', //  Primary color
+              'success-color': '#55D187', //  Success color
+              'error-color': '#ED6F6F', //  False color
+              'warning-color': '#EFBD47', //   Warning color
+              'font-size-base': '14px', //  Main font size
+              'border-radius-base': '2px', //  Component/float fillet
+              'app-content-background': '#fafafa', //   Link color
+            },
           },
           javascriptEnabled: true,
         },

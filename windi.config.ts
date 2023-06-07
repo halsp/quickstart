@@ -9,7 +9,7 @@ export default defineConfig({
         '-1': '-1',
       },
       colors: {
-        primary: '#0084f4',
+        primary: '#1890ff',
       },
       screens: {
         sm: '576px',
