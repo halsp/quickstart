@@ -1,7 +1,11 @@
 <template>
   <div class="w-full h-full flex flex-col">
     <div class="px-10 pt-8 pb-0">
-      <PluginSelecter :on-submit="onSubmit" />
+      <PluginSelecter
+        :on-submit="onSubmit"
+        :fullscreen-enable="fullscreenEnable"
+        @fullscreen="onFullscreen"
+      />
     </div>
 
     <div ref="codeRef" class="flex-1 h-0"></div>
@@ -14,6 +18,7 @@
   import { ref } from 'vue';
 
   const codeRef = ref<HTMLDivElement>();
+  const fullscreenEnable = ref(false);
 
   async function onSubmit(project: Project) {
     const codeContainer = document.createElement('div');
@@ -28,5 +33,11 @@
     await sdk.embedProject(codeContainer, project, {
       openFile: 'init.sh',
     });
+    fullscreenEnable.value = true;
+  }
+
+  function onFullscreen() {
+    const codeDev = codeRef.value!;
+    codeDev.requestFullscreen();
   }
 </script>

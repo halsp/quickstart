@@ -33,7 +33,15 @@
         </a-select>
       </a-form-item>
       <a-form-item class="flex-1">
-        <a-button type="primary" :loading="loading" @click="handleCreate"> 立即创建 </a-button>
+        <div class="space-x-10 flex items-center">
+          <a-button type="primary" :loading="loading" @click="handleCreate"> 立即创建 </a-button>
+          <a-button v-if="fullscreenEnable" type="primary" @click="() => emit('fullscreen')">
+            <div class="flex items-center space-x-2">
+              <Icon icon="ant-design:fullscreen-outlined" />
+              <span>全屏</span>
+            </div>
+          </a-button>
+        </div>
       </a-form-item>
     </div>
   </a-form>
@@ -43,11 +51,18 @@
   import { PropType, computed, reactive, ref, watch } from 'vue';
   import type { CascaderProps, SelectProps } from 'ant-design-vue';
   import { Project } from '@stackblitz/sdk';
+  import Icon from './Icon';
+
+  const emit = defineEmits(['fullscreen']);
 
   const props = defineProps({
     onSubmit: {
       type: Function as PropType<(project: Project) => void | Promise<void>>,
       required: true,
+    },
+    fullscreenEnable: {
+      type: Boolean,
+      default: false,
     },
   });
 
