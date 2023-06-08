@@ -1,6 +1,6 @@
 <template>
   <div ref="containerRef">
-    <PluginSelecter />
+    <PluginSelecter :on-submit="onSubmit" />
   </div>
 </template>
 
@@ -8,6 +8,7 @@
   import { onMounted, ref } from 'vue';
   import PluginSelecter from '/@/components/PluginSelecter.vue';
   import { useRoute } from 'vue-router';
+  import sdk, { Project } from '@stackblitz/sdk';
 
   const route = useRoute();
 
@@ -33,4 +34,10 @@
       noticeChange();
     }, 200);
   });
+
+  function onSubmit(project: Project) {
+    sdk.openProject(project, {
+      openFile: 'init.sh',
+    });
+  }
 </script>

@@ -30,15 +30,24 @@
       </a-select>
     </a-form-item>
     <a-form-item>
-      <a-button type="primary" class="ml-20" @click="handleCreate">立即创建</a-button>
+      <a-button type="primary" class="ml-20" :loading="loading" @click="handleCreate">
+        立即创建
+      </a-button>
     </a-form-item>
   </a-form>
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, ref, watch } from 'vue';
+  import { PropType, computed, reactive, ref, watch } from 'vue';
   import type { CascaderProps, SelectProps } from 'ant-design-vue';
-  import sdk from '@stackblitz/sdk';
+  import { Project } from '@stackblitz/sdk';
+
+  const props = defineProps({
+    onSubmit: {
+      type: Function as PropType<(project: Project) => void | Promise<void>>,
+      required: true,
+    },
+  });
 
   const formData = reactive({
     name: 'halsp-project',
@@ -48,6 +57,7 @@
   });
 
   const isMicro = ref(false);
+  const loading = ref(false);
 
   watch(
     () => formData.env,
@@ -220,7 +230,7 @@
     ].filter((item) => typeof item.when == 'undefined' || !!item.when),
   );
 
-  function handleCreate() {
+  async function handleCreate() {
     const mirrorArg = ` --registry=${formData.registry}`;
     const name = formData.name || 'halsp-project';
     const env = getEnv(envOptions.value) || 'native';
@@ -228,13 +238,12 @@
 
     const command = `halsp create ${name} -e ${env} --plugins ${plugins} -pm yarn --skipInstall --skipGit --skipRun${mirrorArg}`;
 
-    sdk.openProject(
-      {
-        title: 'Halsp Project',
-        description: `Created by @halsp/cli with command "${command}"`,
-        template: 'node',
-        files: {
-          'init.sh': `
+    const project: Project = {
+      title: 'Halsp Project',
+      description: `Created by @halsp/cli with command "${command}"`,
+      template: 'node',
+      files: {
+        'init.sh': `
 yarn add @halsp/cli${mirrorArg}
 mkdir .temp
 cd .temp
@@ -251,22 +260,25 @@ code ./README.md
 yarn install${mirrorArg}
 yarn start
 `,
-          'package.json': `
+        'package.json': `
 {
   "name": "${name}",
   "version": "0.0.0"
 }`,
-          '.stackblitzrc': `
+        '.stackblitzrc': `
 {
   "installDependencies": false,
   "startCommand": "sh ./init.sh"
 }`,
-        },
       },
-      {
-        openFile: 'init.sh',
-      },
-    );
+    };
+
+    loading.value = true;
+    try {
+      await props.onSubmit(project);
+    } finally {
+      loading.value = false;
+    }
   }
 
   function getEnv(options: CascaderProps['options']): string | undefined {
