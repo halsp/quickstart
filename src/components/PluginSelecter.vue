@@ -1,16 +1,18 @@
 <template>
   <a-form :model="formData" :label-col="{ style: { width: '80px' } }">
-    <a-form-item label="项目名称" value="value">
-      <a-input v-model:value="formData.name" placeholder="halsp-project" />
-    </a-form-item>
-    <a-form-item label="运行环境" value="env">
-      <a-cascader
-        v-model:value="formData.env"
-        :options="envOptions"
-        expand-trigger="hover"
-        placeholder="请选择运行环境"
-      />
-    </a-form-item>
+    <div class="flex space-x-10">
+      <a-form-item label="项目名称" value="value" class="flex-1">
+        <a-input v-model:value="formData.name" placeholder="halsp-project" />
+      </a-form-item>
+      <a-form-item label="运行环境" value="env" class="flex-1">
+        <a-cascader
+          v-model:value="formData.env"
+          :options="envOptions"
+          expand-trigger="hover"
+          placeholder="请选择运行环境"
+        />
+      </a-form-item>
+    </div>
     <a-form-item label="运行环境" value="plugins">
       <a-select
         v-model:value="formData.plugins"
@@ -19,21 +21,21 @@
         :options="pluginOptions"
       />
     </a-form-item>
-    <a-form-item label="Registry" value="registry">
-      <a-select v-model:value="formData.registry">
-        <a-select-option value="https://registry.npmjs.org">
-          https://registry.npmjs.org
-        </a-select-option>
-        <a-select-option value="https://registry.npmmirror.com">
-          https://registry.npmmirror.com
-        </a-select-option>
-      </a-select>
-    </a-form-item>
-    <a-form-item>
-      <a-button type="primary" class="ml-20" :loading="loading" @click="handleCreate">
-        立即创建
-      </a-button>
-    </a-form-item>
+    <div class="flex space-x-10">
+      <a-form-item label="Registry" value="registry" class="flex-1">
+        <a-select v-model:value="formData.registry">
+          <a-select-option value="https://registry.npmjs.org">
+            https://registry.npmjs.org
+          </a-select-option>
+          <a-select-option value="https://registry.npmmirror.com">
+            https://registry.npmmirror.com
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item class="flex-1">
+        <a-button type="primary" :loading="loading" @click="handleCreate"> 立即创建 </a-button>
+      </a-form-item>
+    </div>
   </a-form>
 </template>
 
