@@ -32,6 +32,8 @@
 
     await sdk.embedProject(codeContainer, project, {
       openFile: 'init.sh',
+      hideExplorer: false,
+      showSidebar: true,
     });
     fullscreenEnable.value = true;
   }

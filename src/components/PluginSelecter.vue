@@ -69,7 +69,7 @@
   const formData = reactive({
     name: 'halsp-project',
     env: ['1'],
-    plugins: ['inject', 'router', 'pipe'] as string[],
+    plugins: ['inject', 'router', 'pipe', 'swagger'] as string[],
     registry: 'https://registry.npmmirror.com',
   });
 
@@ -274,6 +274,8 @@ cp -r ./.temp/${name}/* ./
 cp -r ./.temp/${name}/.stackblitzrc ./
 rm -rf ./temp
 code ./README.md
+yarn install${mirrorArg}
+rm -rf yarn.lock
 yarn install${mirrorArg}
 yarn start
 `,

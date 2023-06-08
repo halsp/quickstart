@@ -16,7 +16,7 @@ export default (): UserConfig => {
   const root = process.cwd();
 
   return {
-    base: '.',
+    base: '',
     root,
     plugins: [
       vue(),
