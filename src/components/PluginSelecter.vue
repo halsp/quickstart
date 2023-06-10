@@ -1,23 +1,23 @@
 <template>
-  <a-form :model="formData" :label-col="{ style: { width: '80px' } }">
+  <a-form :model="formData" :label-col="{ style: { width: '100px' } }">
     <div class="flex space-x-10">
-      <a-form-item label="项目名称" value="value" class="flex-1">
+      <a-form-item :label="$t('pluginSelecter.projectName')" value="value" class="flex-1">
         <a-input v-model:value="formData.name" placeholder="halsp-project" />
       </a-form-item>
-      <a-form-item label="运行环境" value="env" class="flex-1">
+      <a-form-item :label="$t('pluginSelecter.selectPlugins')" value="env" class="flex-1">
         <a-cascader
           v-model:value="formData.env"
           :options="envOptions"
           expand-trigger="hover"
-          placeholder="请选择运行环境"
+          :placeholder="$t('pluginSelecter.selectPluginsPlaceholder')"
         />
       </a-form-item>
     </div>
-    <a-form-item label="运行环境" value="plugins">
+    <a-form-item :label="$t('pluginSelecter.env')" value="plugins">
       <a-select
         v-model:value="formData.plugins"
         mode="multiple"
-        placeholder="请选择运行环境"
+        placeholder="$t('pluginSelecter.envPlaceholder')"
         :options="pluginOptions"
       />
     </a-form-item>
@@ -34,11 +34,13 @@
       </a-form-item>
       <a-form-item class="flex-1">
         <div class="space-x-10 flex items-center">
-          <a-button type="primary" :loading="loading" @click="handleCreate"> 立即创建 </a-button>
+          <a-button type="primary" :loading="loading" @click="handleCreate">
+            {{ $t('pluginSelecter.create') }}
+          </a-button>
           <a-button v-if="fullscreenEnable" type="primary" @click="() => emit('fullscreen')">
             <div class="flex items-center space-x-2">
               <Icon icon="ant-design:fullscreen-outlined" />
-              <span>全屏</span>
+              <span> {{ $t('pluginSelecter.fullscreen') }}</span>
             </div>
           </a-button>
         </div>
@@ -52,6 +54,7 @@
   import type { CascaderProps, SelectProps } from 'ant-design-vue';
   import { Project } from '@stackblitz/sdk';
   import Icon from './Icon';
+  import { t } from '/@/lang';
 
   const emit = defineEmits(['fullscreen']);
 
@@ -88,74 +91,74 @@
 
   const envOptions = computed<CascaderProps['options']>(() => [
     {
-      label: '原生 NodeJS',
+      label: t('envDesc.native'),
       value: '1',
       flag: 'native',
     },
     {
-      label: '腾讯云函数',
-      pickMessage: '选择云函数类型',
+      label: t('envDesc.tencent'),
+      pickMessage: t('envDesc.selectFunctionType'),
       value: '2',
       children: [
         {
-          label: '事件函数',
+          label: t('envDesc.tencentEvent'),
           flag: 'lambda',
           value: '2.1',
         },
         {
-          label: 'Web 函数',
+          label: t('envDesc.tencentWeb'),
           flag: 'sls-http-tcloud',
           value: '2.2',
         },
       ],
     },
     {
-      label: 'Azure Function App',
+      label: t('envDesc.azure'),
       flag: 'azure',
       value: '3',
     },
     {
-      label: 'AWS Lambda',
+      label: t('envDesc.aws'),
       flag: 'lambda',
       value: '4',
     },
     {
-      label: '阿里云函数计算',
-      pickMessage: '选择云函数类型',
+      label: t('envDesc.aliyun'),
+      pickMessage: t('envDesc.selectFunctionType'),
       value: '5',
       children: [
         {
-          label: '处理事件请求',
+          label: t('envDesc.aliyunEvent'),
           flag: 'lambda',
           value: '5.1',
         },
         {
-          label: '处理 HTTP 请求',
+          label: t('envDesc.aliyunHttp'),
           flag: 'alifc',
           value: '5.2',
         },
       ],
     },
     {
-      label: '华为云函数工作流',
-      pickMessage: '选择云函数类型',
+      label: t('envDesc.huawei'),
+      pickMessage: t('envDesc.selectFunctionType'),
       value: '6',
       children: [
         {
-          label: '事件函数',
+          label: t('envDesc.huaweiEvent'),
           flag: 'lambda',
           value: '6.1',
         },
         {
-          label: 'Web 函数',
+          label: t('envDesc.huaweiWeb'),
           flag: 'sls-http-huawei',
           value: '6.2',
         },
       ],
     },
     {
-      label: '微服务',
-      pickMessage: '选择微服务通讯方式',
+      label: t('envDesc.micro'),
+      pickMessage: t('envDesc.selectMicro'),
       value: '7',
       children: [
         {
@@ -191,60 +194,52 @@
     [
       {
         value: 'inject',
-        label: '依赖注入 (@halsp/inject)',
       },
       {
         value: 'router',
-        label: '路由 (@halsp/router)',
       },
       {
         value: 'view',
-        label: '视图渲染 (@halsp/view)',
       },
       {
         value: 'mva',
-        label: 'Mva 框架 (@halsp/mva)',
         when: () => !isMicro.value,
       },
       {
         value: 'pipe',
-        label: '管道 (用于参数格式化) (@halsp/pipe)',
       },
       {
         value: 'filter',
-        label: '过滤器 (用于拦截请求) (@halsp/filter)',
       },
       {
         value: 'validator',
-        label: '请求参数校验 (@halsp/validator)',
       },
       {
         value: 'testing',
-        label: '测试工具 (@halsp/testing)',
       },
       {
         value: 'static',
-        label: '静态资源 (@halsp/static)',
         when: !isMicro.value,
       },
       {
         value: 'swagger',
-        label: 'Swagger 文档 (@halsp/swagger)',
         when: !isMicro.value,
       },
       {
         value: 'jwt',
-        label: 'jwt 身份验证中间件 (@halsp/jwt)',
       },
       {
         value: 'env',
-        label: '环境配置插件 (@halsp/env)',
       },
       {
         value: 'logger',
-        label: '日志插件 (@halsp/logger)',
       },
-    ].filter((item) => typeof item.when == 'undefined' || !!item.when),
+    ]
+      .filter((item) => typeof item.when == 'undefined' || !!item.when)
+      .map((item) => ({
+        value: item.value,
+        label: t(`pluginDesc.${item.value}`) + ` (@halsp/${item.value})`,
+      })),
   );
 
   async function handleCreate() {
