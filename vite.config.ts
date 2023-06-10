@@ -30,7 +30,7 @@ export default (): UserConfig => {
       Components({
         resolvers: [
           AntDesignVueResolver({
-            importStyle: 'less',
+            importStyle: false,
           }),
         ],
       }),

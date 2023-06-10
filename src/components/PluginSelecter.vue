@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
   import { PropType, computed, reactive, ref, watch } from 'vue';
-  import type { CascaderProps, SelectProps } from 'ant-design-vue';
+  import { CascaderProps, SelectProps, notification } from 'ant-design-vue';
   import { Project } from '@stackblitz/sdk';
   import Icon from './Icon';
   import { t } from '/@/lang';
@@ -270,8 +270,6 @@ cp -r ./.temp/${name}/.stackblitzrc ./
 rm -rf ./temp
 code ./README.md
 yarn install${mirrorArg}
-rm -rf yarn.lock
-yarn install${mirrorArg}
 yarn start
 `,
         'package.json': `
@@ -284,12 +282,18 @@ yarn start
   "installDependencies": false,
   "startCommand": "sh ./init.sh"
 }`,
+        'README.md': `## ${t('pluginSelecter.initTips')}`,
       },
     };
 
     loading.value = true;
     try {
       await props.onSubmit(project);
+    } catch (ex) {
+      notification.error({
+        message: t('pluginSelecter.createFailed'),
+        description: (ex as Error)?.message || ex?.toString(),
+      });
     } finally {
       loading.value = false;
     }

@@ -6,7 +6,10 @@ export default {
     selectPlugins: 'Plugins',
     selectPluginsPlaceholder: 'Select plugins',
     create: 'Create',
+    createFailed: 'Create Failed',
     fullscreen: 'Fullscreen',
+    initTips:
+      'Initializing. If initialization fails, please execute the `sh ./init.sh` command manually',
   },
   pluginDesc: {
     inject: 'Dependency injection and Inversion of control',

@@ -6,7 +6,9 @@ export default {
     selectPlugins: '选择插件',
     selectPluginsPlaceholder: '请选择插件',
     create: '立即创建',
+    createFailed: '创建失败',
     fullscreen: '全屏',
+    initTips: '正在初始化。如果初始化失败，请手动执行 `sh ./init.sh` 命令',
   },
   pluginDesc: {
     inject: '依赖注入',

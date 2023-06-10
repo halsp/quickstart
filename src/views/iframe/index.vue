@@ -37,7 +37,7 @@
 
   function onSubmit(project: Project) {
     sdk.openProject(project, {
-      openFile: 'init.sh',
+      openFile: 'README.md',
     });
   }
 </script>

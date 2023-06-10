@@ -3,6 +3,7 @@ import App from './App.vue';
 import { setupRouter } from '/@/router';
 import i18n from '/@/lang';
 
+import 'ant-design-vue/dist/antd.less';
 import '/@/design/index.less';
 import 'virtual:windi.css';
 import 'virtual:svg-icons-register';

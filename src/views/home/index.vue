@@ -31,7 +31,7 @@
     codeDev.appendChild(codeContainer);
 
     await sdk.embedProject(codeContainer, project, {
-      openFile: 'init.sh',
+      openFile: 'README.md',
       hideExplorer: false,
       showSidebar: true,
     });
