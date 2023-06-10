@@ -54,7 +54,7 @@
   import { CascaderProps, SelectProps, notification } from 'ant-design-vue';
   import { Project } from '@stackblitz/sdk';
   import Icon from './Icon';
-  import { t } from '/@/lang';
+  import { t, locale } from '/@/lang';
 
   const emit = defineEmits(['fullscreen']);
 
@@ -73,7 +73,8 @@
     name: 'halsp-project',
     env: ['1'],
     plugins: ['inject', 'router', 'pipe', 'swagger'] as string[],
-    registry: 'https://registry.npmmirror.com',
+    registry:
+      locale.value == 'zh-CN' ? 'https://registry.npmmirror.com' : 'https://registry.npmjs.org',
   });
 
   const isMicro = ref(false);
