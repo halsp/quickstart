@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-  import { PropType, computed, reactive, ref, watch } from 'vue';
+  import { PropType, computed, onMounted, reactive, ref, watch } from 'vue';
   import { CascaderProps, SelectProps, notification } from 'ant-design-vue';
   import { Project } from '@stackblitz/sdk';
   import Icon from './Icon';
@@ -64,6 +64,10 @@
       required: true,
     },
     fullscreenEnable: {
+      type: Boolean,
+      default: false,
+    },
+    init: {
       type: Boolean,
       default: false,
     },
@@ -89,6 +93,12 @@
       );
     },
   );
+
+  onMounted(() => {
+    if (props.init) {
+      handleCreate();
+    }
+  });
 
   const envOptions = computed<CascaderProps['options']>(() => [
     {

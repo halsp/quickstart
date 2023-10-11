@@ -4,6 +4,7 @@
       <PluginSelecter
         :on-submit="onSubmit"
         :fullscreen-enable="fullscreenEnable"
+        :init="true"
         @fullscreen="onFullscreen"
       />
     </div>
