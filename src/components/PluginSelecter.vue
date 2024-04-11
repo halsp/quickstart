@@ -4,20 +4,20 @@
       <a-form-item :label="$t('pluginSelecter.projectName')" value="value" class="flex-1">
         <a-input v-model:value="formData.name" placeholder="halsp-project" />
       </a-form-item>
-      <a-form-item :label="$t('pluginSelecter.selectPlugins')" value="env" class="flex-1">
+      <a-form-item :label="$t('pluginSelecter.env')" value="env" class="flex-1">
         <a-cascader
           v-model:value="formData.env"
           :options="envOptions"
           expand-trigger="hover"
-          :placeholder="$t('pluginSelecter.selectPluginsPlaceholder')"
+          :placeholder="$t('pluginSelecter.envPlaceholder')"
         />
       </a-form-item>
     </div>
-    <a-form-item :label="$t('pluginSelecter.env')" value="plugins">
+    <a-form-item :label="$t('pluginSelecter.selectPlugins')" value="plugins">
       <a-select
         v-model:value="formData.plugins"
         mode="multiple"
-        placeholder="$t('pluginSelecter.envPlaceholder')"
+        placeholder="$t('pluginSelecter.selectPluginsPlaceholder')"
         :options="pluginOptions"
       />
     </a-form-item>
